@@ -1,0 +1,22 @@
+# Your Azure app client ID — account-specific, never committed.
+config.py
+
+# OAuth token cache — contains a live refresh token for your Microsoft account.
+.onenote_token_cache.json
+
+# Exported notebook content — this is your actual personal/handwritten notes.
+onenote_export/
+onenote_export_latex/
+
+# Diagnostic dumps from debug_inkml.py (can contain real page content).
+_inkml_debug_response.bin
+_plain_debug_response.html
+_test_*.png
+_test_*.html
+
+# Per-page scratch files toPDF.py cleans up itself, but just in case.
+_tmp_page_*.pdf
+
+# Python
+__pycache__/
+*.pyc
