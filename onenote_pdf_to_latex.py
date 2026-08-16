@@ -50,11 +50,14 @@ Text already extracted programmatically from this page (may be empty, partial, o
 ---
 
 Read the attached image and transcribe ALL of its content into clean LaTeX:
-- Use proper amsmath math mode (inline $...$, or pmatrix/bmatrix/align as appropriate) for every mathematical expression, matrix, or equation.
+- Use proper amsmath math mode (inline $...$, or pmatrix/bmatrix/align as appropriate) for every mathematical expression, matrix, or equation. This includes fragments that look like a continuation of a formula from the previous page (e.g. a page that starts with "= \\begin{{cases}}...") — you are transcribing this page in isolation, so wrap it in math mode too, exactly as if it stood alone. Never leave math-mode content (subscripts, \\begin{{cases}}, \\underbrace, \\binom, etc.) at top level outside $...$ or \\[...\\].
 - Preserve structure: headings as \\textbf{{...}} or \\section*{{...}}, bullet lists as itemize, nesting/indentation, arrows as $\\to$ or $\\Rightarrow$.
 - If something is a genuine hand-drawn diagram/sketch (not text or math), replace it with a short LaTeX comment describing it, e.g. % [diagram: sketch of ...] — do not try to redraw it.
 - Ignore OneNote page furniture (timestamps, page titles already implied by the filename).
-- Output ONLY the LaTeX body for this page: no \\documentclass, no \\begin{{document}}, no markdown code fences, no commentary.
+- In tables (tabular/array), make sure the number of column specifiers matches the number of `&`-separated entries in every row — miscounting produces a fatal "Extra alignment tab" error.
+- Never use \\tag{{...}} inside $$...$$ or \\[...\\] — it only works inside an amsmath environment (equation, align, gather, etc.). If the page has an equation with a hand-drawn label like (I)/(II)/(III), put it in \\begin{{equation}}...\\tag{{...}}\\end{{equation}} instead.
+- Never let \\textcolor{{color}}{{...}} span a blank line (a paragraph break inside its argument is a fatal error). If the colored content spans multiple paragraphs/list items, wrap it as {{\\color{{color}} ... }} instead.
+- Output ONLY the LaTeX body for this page: no \\documentclass, no \\begin{{document}}, no markdown code fences anywhere in the output (not even around a single formula), no commentary.
 - If the page is blank or has no meaningful content, output nothing at all.
 """
 
@@ -63,7 +66,15 @@ LATEX_PREAMBLE = r"""\documentclass[11pt]{article}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage[margin=1in]{geometry}
 \usepackage{xcolor}
-\usepackage{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{tikzmark}
+\usepackage{multirow}
+\usepackage{cancel}
+\usepackage{centernot}
+\usepackage[normalem]{ulem}
+\usepackage{mathtools}
+\usepackage{pifont}
+
 \begin{document}
 
 """
